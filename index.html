@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIKA BILLIARDS — Hệ Thống Quản Lý Giải Đấu</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="navigate('home')">
+    <span id="lbl-logo-brand">NIKA</span>
+    <span class="logo-sub" id="lbl-logo-sub">Billiards Tournament</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="navigate('home')" id="nav-home">Trang Chủ</button>
+    <button class="nav-btn" onclick="navigate('tournaments')" id="nav-tournaments">Giải Đấu</button>
+    <button class="nav-btn" onclick="navigate('draw')" id="nav-draw">🎲 Bốc Thăm</button>
+    <button class="nav-btn" onclick="navigate('even')" id="nav-even">🎰 Event</button>
+    <button class="nav-btn" onclick="navigate('register')" id="nav-register">Đăng Ký</button>
+    <button class="nav-btn" onclick="navigate('admin')" id="nav-admin">Quản Trị</button>
+  </div>
+  <div class="nav-right"><div class="pill" id="lbl-live-pill">TRỰC TIẾP</div></div>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-orb hero-orb-1"></div><div class="hero-orb hero-orb-2"></div>
+    <div class="hero-eyebrow" id="lbl-hero-eyebrow">Hệ Thống Quản Lý Giải Đấu Chuyên Nghiệp</div>
+    <div class="hero-brand" id="lbl-hero-brand">NIKA</div>
+    <div class="hero-subtitle" id="lbl-hero-subtitle">GIẢI ĐẤU BILLIARDS</div>
+    <p class="hero-desc" id="lbl-hero-desc">Nền tảng tổ chức giải đấu Bi-a chuyên nghiệp cho Carom 3 Băng và Pool. Bảng thi đấu LED thời gian thực, quản lý điểm số trực tuyến, chuyên nghiệp như giải vô địch quốc gia.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="navigate('tournaments')">XEM GIẢI ĐẤU</button>
+      <button class="btn-secondary" onclick="navigate('register')">ĐĂNG KÝ NGAY</button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-num" id="stat-tournaments">0</span><span class="stat-label">Giải Đấu</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-players">0</span><span class="stat-label">Vận Động Viên</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-matches">0</span><span class="stat-label">Trận Đã Đấu</span></div>
+      <div class="stat-item"><span class="stat-num" id="stat-live">0</span><span class="stat-label">Đang Diễn Ra</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOURNAMENTS -->
+<div class="page" id="page-tournaments">
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">Danh Sách Giải Đấu</h2>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <select class="form-select" style="width:auto;padding:0.35rem 2rem 0.35rem 0.7rem;" id="filter-discipline" onchange="renderTournaments()">
+          <option value="">Tất cả môn</option><option value="Carom 3 Băng">Carom 3 Băng</option><option value="Pool">Pool</option>
+        </select>
+        <select class="form-select" style="width:auto;padding:0.35rem 2rem 0.35rem 0.7rem;" id="filter-status" onchange="renderTournaments()">
+          <option value="">Tất cả trạng thái</option><option value="open">Mở đăng ký</option><option value="live">Đang diễn ra</option><option value="done">Đã kết thúc</option>
+        </select>
+      </div>
+    </div>
+    <div class="tournament-grid" id="tournament-grid"></div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="page-detail">
+  <div class="section">
+    <button class="btn-ghost btn-sm" onclick="navigate('tournaments')" style="margin-bottom:1rem;">← Về danh sách</button>
+    <div id="detail-header"></div>
+    <div class="tabs" id="detail-tabs">
+      <button class="tab-btn active" onclick="switchTab('bracket')">🏆 Bảng Thi Đấu</button>
+      <button class="tab-btn" onclick="switchTab('matches')">🎱 Các Trận</button>
+      <button class="tab-btn" onclick="switchTab('players')">👥 VĐV</button>
+      <button class="tab-btn" onclick="switchTab('standings')">📊 Bảng Xếp Hạng</button>
+    </div>
+    <div id="tab-bracket"><div class="bracket-container" id="bracket-view"></div></div>
+    <div id="tab-matches" style="display:none;"></div>
+    <div id="tab-players" style="display:none;"></div>
+    <div id="tab-standings" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- BỐC THĂM -->
+<div class="page" id="page-draw">
+  <div class="section" style="padding-bottom:0.5rem;">
+    <div style="text-align:center;padding:2rem 0 1rem;">
+      <div style="font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.6rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--gold-bright) 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(212,175,55,0.4));">🎱 BỐC THĂM VĐV</div>
+      <div style="font-size:0.85rem;color:var(--text-dim);margin-top:0.35rem;">Quay ngẫu nhiên – Sắp xếp vị trí thi đấu</div>
+    </div>
+  </div>
+  <div class="draw-container">
+    <div class="glass-panel" style="margin-bottom:1.25rem;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Chọn Giải Đấu Để Bốc Thăm</label>
+        <select class="form-select" id="draw-tournament-select" onchange="initDraw()">
+          <option value="">-- Chọn giải đấu --</option>
+        </select>
+      </div>
+      <div id="draw-players-count" style="font-size:0.78rem;color:var(--text-dim);font-weight:600;margin-top:0.65rem;"></div>
+    </div>
+
+    <div class="slot-machine" id="slot-machine" style="display:none;">
+      <div style="text-align:center;margin-bottom:1rem;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.18em;color:var(--text-dim);">BỐC VỊ TRÍ</div>
+        <div id="draw-current-pos" style="font-family:var(--font-display);font-size:2.2rem;font-weight:900;color:var(--gold);line-height:1.1;">—</div>
+      </div>
+      <div class="slot-display">
+        <div id="slot-reel" style="width:100%;text-align:center;">
+          <div class="slot-name idle" id="slot-name-display">Nhấn BỐC THĂM để bắt đầu</div>
+        </div>
+      </div>
+      <div class="draw-progress">
+        <div class="draw-progress-bar"><div class="draw-progress-fill" id="draw-prog-fill" style="width:0%"></div></div>
+        <div class="draw-progress-label"><span id="draw-prog-label">0 / 0 đã bốc</span></div>
+      </div>
+      <div class="draw-btn-wrap">
+        <button class="btn-draw" id="btn-draw-go" onclick="doDraw()">🎲 BỐC THĂM</button>
+        <button class="btn-primary" id="btn-draw-all" onclick="drawAll()" style="padding:0.88rem 1.4rem;font-size:0.8rem;">⚡ Bốc Tất Cả</button>
+        <button style="padding:0.88rem 1.25rem;border-radius:var(--radius-lg);background:rgba(255,59,92,0.08);color:var(--red);font-family:var(--font-main);font-size:0.82rem;font-weight:700;border:1px solid rgba(255,59,92,0.3);cursor:pointer;" onclick="resetDraw()">↺ Bốc Lại</button>
+      </div>
+    </div>
+
+    <div id="drawn-results" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+        <h3 style="font-size:0.82rem;font-weight:800;letter-spacing:0.06em;color:var(--text-dim);text-transform:uppercase;">KẾT QUẢ BỐC THĂM</h3>
+        <div id="drawn-actions" style="display:flex;gap:0.5rem;align-items:center;"></div>
+      </div>
+      <div class="drawn-grid" id="drawn-grid"></div>
+    </div>
+
+    <div id="draw-pairs-section" style="display:none;margin-top:2rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+        <h3 style="font-size:0.82rem;font-weight:800;letter-spacing:0.06em;color:var(--neon-blue);text-transform:uppercase;">🥊 LỊCH THI ĐẤU</h3>
+        <span style="font-size:0.72rem;color:var(--text-dim);">Sắp xếp theo kết quả bốc thăm</span>
+      </div>
+      <div class="match-pairs-grid" id="match-pairs-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVEN -->
+<div class="page" id="page-even">
+  <div class="section" style="padding-bottom:0.5rem;">
+    <div style="text-align:center;padding:2rem 0 1rem;">
+      <div style="font-family:var(--font-display);font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:900;background:linear-gradient(135deg,var(--purple) 0%,var(--neon-blue) 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 16px rgba(168,85,247,0.4));">🎰 EVENT LUCKY DRAW</div>
+      <div style="font-size:0.82rem;color:var(--text-dim);margin-top:0.3rem;">Bốc thăm may mắn – Trao giải thưởng</div>
+    </div>
+  </div>
+  <div class="even-container">
+    <div class="even-tabs">
+      <button class="even-tab active" id="even-tab-list" onclick="switchEvenTab('list')">📋 Danh Sách</button>
+      <button class="even-tab" id="even-tab-spin" onclick="switchEvenTab('spin')">🎡 Bốc Thăm</button>
+    </div>
+    <div id="even-panel-list"></div>
+    <div id="even-panel-spin" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="page" id="page-register">
+  <div class="register-page">
+    <div class="register-card glass-panel">
+      <div class="register-header">
+        <div style="font-size:2.2rem;margin-bottom:0.35rem;">🎱</div>
+        <div style="font-size:1.3rem;font-weight:900;color:var(--gold);margin-bottom:0.18rem;" id="lbl-reg-title">Đăng Ký Tham Dự</div>
+        <div style="font-size:0.78rem;color:var(--text-dim);" id="lbl-reg-sub">Tham gia giải đấu – Thể hiện đẳng cấp của bạn</div>
+      </div>
+      <div class="form-group" style="text-align:center;">
+        <div class="avatar-upload" id="avatarPreview" onclick="document.getElementById('avatarInput').click()"><span style="font-size:1.3rem;color:var(--text-dim);">📷</span></div>
+        <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)" style="display:none;">
+        <div style="font-size:0.66rem;color:var(--text-dim);margin-top:0.35rem;">Nhấn để tải ảnh đại diện</div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Họ và Tên *</label><input type="text" class="form-input" id="reg-name" placeholder="Nhập họ tên đầy đủ"></div>
+        <div class="form-group"><label class="form-label">Số Điện Thoại *</label><input type="tel" class="form-input" id="reg-phone" placeholder="09xxxxxxxx"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Trình Độ *</label>
+          <select class="form-select" id="reg-skill">
+            <option value="">Chọn trình độ</option>
+            <option value="A">A — Chuyên nghiệp</option><option value="B">B — Cao cấp</option>
+            <option value="C">C — Trung cấp</option><option value="D">D — Mới bắt đầu</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Giải Đấu</label>
+          <select class="form-select" id="reg-tournament"><option value="">Chọn giải đấu</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Môn Thi Đấu</label>
+        <select class="form-select" id="reg-discipline"><option value="Carom 3 Băng">Carom 3 Băng</option><option value="Pool">Pool</option></select>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:0.5rem;" onclick="submitRegistration()">ĐĂNG KÝ THAM DỰ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-grid">
+    <div class="admin-sidebar">
+      <div style="font-size:0.65rem;font-weight:900;color:var(--gold);letter-spacing:0.12em;padding:0.45rem 0.5rem;margin-bottom:0.6rem;">BẢNG ĐIỀU KHIỂN</div>
+      <div class="sidebar-section">Tổng Quan</div>
+      <button class="sidebar-item active" onclick="adminNav('dashboard')" id="adm-dashboard"><span class="icon">📊</span>Tổng Quan</button>
+      <button class="sidebar-item" onclick="adminNav('create')" id="adm-create"><span class="icon">➕</span>Tạo Giải Đấu</button>
+      <div class="sidebar-section">Quản Lý</div>
+      <button class="sidebar-item" onclick="adminNav('manage-tournaments')" id="adm-manage-tournaments"><span class="icon">🏆</span>Quản Lý Giải</button>
+      <button class="sidebar-item" onclick="adminNav('players-admin')" id="adm-players-admin"><span class="icon">👥</span>Vận Động Viên</button>
+      <button class="sidebar-item" onclick="adminNav('matches-admin')" id="adm-matches-admin"><span class="icon">🎱</span>Cập Nhật Điểm</button>
+      <button class="sidebar-item" onclick="adminNav('even-admin')" id="adm-even-admin"><span class="icon">🎰</span>Quản Lý Event</button>
+      <div class="sidebar-section">Báo Cáo</div>
+      <button class="sidebar-item" onclick="adminNav('rankings')" id="adm-rankings"><span class="icon">📈</span>Bảng Xếp Hạng</button>
+      <div class="sidebar-section">Tùy Chỉnh</div>
+      <button class="sidebar-item" onclick="adminNav('customize')" id="adm-customize"><span class="icon">🎨</span>Giao Diện & Nhãn</button>
+      <div style="margin-top:1.5rem;padding:0.7rem;background:rgba(255,59,92,0.05);border-radius:var(--radius);border:1px solid rgba(255,59,92,0.15);">
+        <div style="font-size:0.6rem;font-weight:700;color:var(--red);margin-bottom:0.4rem;letter-spacing:0.05em;">DỮ LIỆU</div>
+        <button class="btn-danger btn-sm" style="width:100%;margin-bottom:0.3rem;" onclick="exportData()">💾 Xuất JSON</button>
+        <button class="btn-ghost btn-sm" style="width:100%;font-size:0.68rem;" onclick="document.getElementById('importInput').click()">📂 Nhập JSON</button>
+        <input type="file" id="importInput" accept=".json" style="display:none;" onchange="importData(event)">
+      </div>
+    </div>
+    <div class="admin-content" id="admin-content"></div>
+  </div>
+</div>
+
+</main>
+
+<!-- SCORE MODAL -->
+<div class="modal-overlay hidden" id="scoreModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="scoreModalTitle">CẬP NHẬT ĐIỂM SỐ</div><button class="modal-close" onclick="closeModal('scoreModal')">✕</button></div>
+    <div class="modal-body" id="scoreModalBody"></div>
+  </div>
+</div>
+
+<!-- GENERIC MODAL -->
+<div class="modal-overlay hidden" id="genericModal">
+  <div class="modal" id="genericModalInner">
+    <div class="modal-header"><div class="modal-title" id="genericModalTitle"></div><button class="modal-close" onclick="closeModal('genericModal')">✕</button></div>
+    <div class="modal-body" id="genericModalBody"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+<canvas id="fw-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999;"></canvas>
+
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
